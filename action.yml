@@ -1,0 +1,22 @@
+name: 'Velero tool installer'
+description: 'Install a specific version of velero binary. Acceptable values are semantic version string like v1.15.0'
+inputs:
+  version:
+    description: 'Version of velero'
+    required: true
+    default: 'v1.13.2'
+branding:
+  color: 'blue'
+runs:
+  using: "composite"
+  steps:
+    - name: Velero tool installer
+      shell: bash
+      run: |
+        mkdir tmp/
+        echo "Downloading Velero version ${{ inputs.version }}"
+        wget -q --show-progress  https://github.com/vmware-tanzu/velero/releases/download/${{ inputs.version }}/velero-${{ inputs.version }}-linux-amd64.tar.gz -P /tmp
+        
+        echo "Copying Velero Binary to /usr/local/sbin"
+        tar -xf /tmp/velero-${{ inputs.version }}-linux-amd64.tar.gz --directory /tmp
+        sudo cp -p /tmp/velero-${{ inputs.version }}-linux-amd64/velero /usr/local/sbin/
